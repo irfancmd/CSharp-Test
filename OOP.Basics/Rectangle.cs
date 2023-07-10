@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace OOP.Basics
 {
-    internal class Rectangle : Shape
+    public class Rectangle : Shape
     {
 
         public double Width { get; set; }

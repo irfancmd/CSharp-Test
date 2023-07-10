@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace OOP.Basics
 {
-    internal class Shape : IRotatable
+    public class Shape : IRotatable
     {
         public string Name { get; set; }
         public string Color { get; set; }

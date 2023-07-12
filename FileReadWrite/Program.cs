@@ -8,9 +8,9 @@
 
         static void Main(string[] args)
         {
-            if(!File.Exists(FILE_PATH))
+            if (!File.Exists(FILE_PATH))
             {
-                if(!Directory.Exists(DIRECTORY_NAME))
+                if (!Directory.Exists(DIRECTORY_NAME))
                 {
                     Directory.CreateDirectory(DIRECTORY_NAME);
                 }
@@ -60,7 +60,7 @@
                 {
                     PrintError("Invalid input. Please try again.");
                 }
-            } while (input != 9) ;
+            } while (input != 9);
         }
 
         private static void CreateNote()
@@ -73,7 +73,7 @@
 
             string? title = Console.ReadLine();
 
-            if(string.IsNullOrEmpty(title))
+            if (string.IsNullOrEmpty(title))
             {
                 PrintError("Note title cannot be empty.");
                 return;
@@ -87,7 +87,7 @@
 
             string? content = Console.ReadLine();
 
-            if(string.IsNullOrEmpty(content))
+            if (string.IsNullOrEmpty(content))
             {
                 PrintError("Note title cannot be empty.");
                 return;
@@ -117,15 +117,21 @@
 
             string[] lines = File.ReadAllLines(FILE_PATH);
 
-            foreach(var line in lines)
+            foreach (var line in lines)
             {
                 string[] splittedNoteData = line.Split(";");
 
                 string idStr = splittedNoteData[0].Substring(splittedNoteData[0].IndexOf(':') + 1);
 
                 // Writing try/catch instead of TryParse for demonstration
-                try {
+                try
+                {
                     int id = int.Parse(idStr);
+
+                    string title = splittedNoteData[1].Substring(splittedNoteData[1].IndexOf(':') + 1);
+                    string content = splittedNoteData[2].Substring(splittedNoteData[2].IndexOf(':') + 1);
+
+                    notes.Add(new Note(id: id, title: title, content: content));
                 }
                 catch (FormatException e)
                 {
@@ -135,7 +141,7 @@
 
                     Console.ResetColor();
                 }
-                catch (Exception e) 
+                catch (Exception e)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine(e.Message);
@@ -143,14 +149,9 @@
 
                     Console.ResetColor();
                 }
-
-                string title = splittedNoteData[1].Substring(splittedNoteData[1].IndexOf(':') + 1);
-                string content = splittedNoteData[2].Substring(splittedNoteData[2].IndexOf(':') + 1);
-
-                notes.Add(new Note(id: id, title: title, content: content));
             }
 
-            Console.ForegroundColor= ConsoleColor.Green;
+            Console.ForegroundColor = ConsoleColor.Green;
 
             Console.WriteLine($"Successfully loaded {notes.Count} note(s)");
 
@@ -161,10 +162,11 @@
 
         private static void PrintAllNotes()
         {
-            ICollection <Note> notes = ReadAllNotesFromFile();
+            ICollection<Note> notes = ReadAllNotesFromFile();
 
-            foreach (Note note in notes) {
-                Console.WriteLine(note); 
+            foreach (Note note in notes)
+            {
+                Console.WriteLine(note);
             }
         }
 

@@ -19,8 +19,26 @@ namespace PieShop.InventoryManagement.Domain.OrderManagement
 
             int numberOfSeconds = new Random().Next(100);
             OrderFulfillmentDate = DateTime.Now.AddSeconds(numberOfSeconds);
-            
+
             OrderItems = new List<OrderItem>();
+        }
+
+        public string ShowOrderDetails()
+        {
+            StringBuilder orderDetails = new StringBuilder();
+
+            orderDetails.AppendLine($"Order ID: {Id}");
+            orderDetails.AppendLine($"Order fulfilment date: {OrderFulfillmentDate.ToShortTimeString()}");
+
+            if (OrderItems != null)
+            {
+                foreach (OrderItem item in OrderItems)
+                {
+                    orderDetails.AppendLine($"{item.ProductId} - {item.ProductName} - {item.AmountOrdered}");
+                }
+            }
+
+            return orderDetails.ToString();
         }
     }
 }

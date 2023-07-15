@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,6 +10,9 @@ namespace PieShop.InventoryManagement.Domain.ProductManagement
 {
     public partial class Product
     {
+        // Ideally this would be a property but making it a field for demonstration
+        public static int stockThreshold = 5;
+
         private int id;
         private string name = string.Empty;
         private string? description;
@@ -52,6 +56,10 @@ namespace PieShop.InventoryManagement.Domain.ProductManagement
 
         public bool IsBelowStockThreshold { get; private set; }
 
+        public Product(int id) : this(id, string.Empty)
+        {
+        }
+
         public Product(int id, string name)
         {
             Id = id;
@@ -66,6 +74,14 @@ namespace PieShop.InventoryManagement.Domain.ProductManagement
             maxItemsInStock = maxAmountInStock;
 
             UpdateLowStock();
+        }
+
+        public static void ChangeStockThreshold(int threshold)
+        {
+            if (stockThreshold > 0)
+            {
+                stockThreshold = threshold;
+            }
         }
 
         public void UseProduct(int itemQuantity)
@@ -123,6 +139,18 @@ namespace PieShop.InventoryManagement.Domain.ProductManagement
             Log(reason);
         }
 
+        public void UpdateLowStock()
+        {
+            if (AmountInStock < stockThreshold)
+            {
+                IsBelowStockThreshold = true;
+            }
+            else
+            {
+                IsBelowStockThreshold = false;
+            }
+        }
+
         public string DisplayDetailsFull()
         {
             StringBuilder sb = new StringBuilder();
@@ -137,6 +165,16 @@ namespace PieShop.InventoryManagement.Domain.ProductManagement
             {
                 sb.AppendLine($"WARNING: Stock Low!");
             }
+
+            return sb.ToString();
+        }
+        public string DisplayDetailsShort()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.AppendLine($"ID: {Id}");
+            sb.AppendLine($"Name: {Name}");
+            sb.AppendLine($"Price: {Price}");
 
             return sb.ToString();
         }

@@ -1,0 +1,4 @@
+1;Sugar;Regular Sugar;100;10;1;2;3;
+2;Cake Decoration;Colorful Cake Decorations;20;8;1;0;4;
+3;Strawberry;Regular Strawberry;10;3;1;2;2;
+4;Eggs;Chicken Eggs;10;3;1;1;6;

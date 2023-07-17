@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace PieShop.InventoryManagement.Domain.ProductManagement
 {
-    public partial class Product
+    public abstract partial class Product
     {
-        private string CreateSimpleProductRepresentation()
+        protected string CreateSimpleProductRepresentation()
         {
             return $"Product {id}: {name}";
         }
 
-        private void Log(string message)
+        protected void Log(string message)
         {
             Console.WriteLine(message);
         }

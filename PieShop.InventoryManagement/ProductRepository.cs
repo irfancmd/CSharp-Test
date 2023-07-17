@@ -1,4 +1,5 @@
-﻿using PieShop.InventoryManagement.Domain.General;
+﻿using PieShop.InventoryManagement.Domain.Contracts;
+using PieShop.InventoryManagement.Domain.General;
 using PieShop.InventoryManagement.Domain.ProductManagement;
 using System;
 using System.Collections.Generic;
@@ -86,8 +87,32 @@ namespace PieShop.InventoryManagement
                         unitType = UnitType.PerItem; //default value
                     }
 
-                    Product product = new Product(productId, name, description, new Price() { ItemPrice = itemPrice, Currency = currency }, unitType, maxItemsInStock);
+                    string productType = productSplits[7];
 
+                    Product product = null;
+
+                    switch (productType)
+                    {
+                        case "1":
+                            success = int.TryParse(productSplits[8], out int amountPerBox);
+                            if (!success)
+                            {
+                                amountPerBox = 1;//default value
+                            }
+
+                            product = new BoxedProduct(productId, name, description, new Price() { ItemPrice = itemPrice, Currency = currency }, maxItemsInStock, amountPerBox);
+                            break;
+
+                        case "2":
+                            product = new FreshProduct(productId, name, description, new Price() { ItemPrice = itemPrice, Currency = currency }, unitType, maxItemsInStock);
+                            break;
+                        case "3":
+                            product = new BulkProduct(productId, name, description, new Price() { ItemPrice = itemPrice, Currency = currency }, maxItemsInStock);
+                            break;
+                        case "4":
+                            product = new RegularProduct(productId, name, description, new Price() { ItemPrice = itemPrice, Currency = currency }, unitType, maxItemsInStock);
+                            break;
+                    }
 
                     products.Add(product);
                 }
@@ -118,6 +143,24 @@ namespace PieShop.InventoryManagement
             }
 
             return products;
+        }
+
+        public void SaveToFile(List<ISavable> savables)
+        {
+            StringBuilder sb = new StringBuilder();
+            string path = $"{directory}{productFileName}";
+
+            foreach (var item in savables)
+            {
+                sb.Append(item.ConvertToStringForSaving());
+                sb.Append(Environment.NewLine);
+            }
+
+            File.WriteAllText(path, sb.ToString());
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Saved items successfully");
+            Console.ResetColor();
         }
     }
 }

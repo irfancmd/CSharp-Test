@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace PieShop.InventoryManagement.Domain.ProductManagement
 {
-    public partial class Product
+    public abstract partial class Product : ICloneable
     {
         // Ideally this would be a property but making it a field for demonstration
         public static int stockThreshold = 5;
@@ -16,8 +16,8 @@ namespace PieShop.InventoryManagement.Domain.ProductManagement
         private int id;
         private string name = string.Empty;
         private string? description;
-        private int maxItemsInStock = 0;
-        private Price Price;
+        protected int maxItemsInStock = 0;
+        public Price Price { get; set; }
 
         public int Id
         {
@@ -52,9 +52,9 @@ namespace PieShop.InventoryManagement.Domain.ProductManagement
 
         public UnitType UnitType { get; set; }
 
-        public int AmountInStock { get; private set; }
+        public int AmountInStock { get; protected set; }
 
-        public bool IsBelowStockThreshold { get; private set; }
+        public bool IsBelowStockThreshold { get; protected set; }
 
         public Product(int id) : this(id, string.Empty)
         {
@@ -84,7 +84,7 @@ namespace PieShop.InventoryManagement.Domain.ProductManagement
             }
         }
 
-        public void UseProduct(int itemQuantity)
+        public virtual void UseProduct(int itemQuantity)
         {
             if (itemQuantity <= AmountInStock)
             {
@@ -96,16 +96,17 @@ namespace PieShop.InventoryManagement.Domain.ProductManagement
             }
             else
             {
-                Log($"Not enough {CreateSimpleProductRepresentation()} in stock. Stock: {AmountInStock}, Requested quantity: {itemQuantity}");
+                // Note that we can omit parentheses of methods that take no parameters in this case
+                Log($"Not enough {CreateSimpleProductRepresentation} in stock. Stock: {AmountInStock}, Requested quantity: {itemQuantity}");
             }
         }
 
-        public void IncreaseStock()
+        public virtual void IncreaseStock()
         {
             IncreaseStock(1);
         }
 
-        public void IncreaseStock(int amount)
+        public virtual void IncreaseStock(int amount)
         {
             int newStock = AmountInStock + amount;
 
@@ -123,7 +124,7 @@ namespace PieShop.InventoryManagement.Domain.ProductManagement
             UpdateLowStock();
         }
 
-        public void DecreaseStock(int quantity, string reason)
+        public virtual void DecreaseStock(int quantity, string reason)
         {
             if (quantity <= AmountInStock)
             {
@@ -139,7 +140,7 @@ namespace PieShop.InventoryManagement.Domain.ProductManagement
             Log(reason);
         }
 
-        public void UpdateLowStock()
+        public virtual void UpdateLowStock()
         {
             if (AmountInStock < stockThreshold)
             {
@@ -151,7 +152,7 @@ namespace PieShop.InventoryManagement.Domain.ProductManagement
             }
         }
 
-        public string DisplayDetailsFull()
+        public virtual string DisplayDetailsFull()
         {
             StringBuilder sb = new StringBuilder();
 
@@ -168,7 +169,8 @@ namespace PieShop.InventoryManagement.Domain.ProductManagement
 
             return sb.ToString();
         }
-        public string DisplayDetailsShort()
+
+        public virtual string DisplayDetailsShort()
         {
             StringBuilder sb = new StringBuilder();
 
@@ -178,5 +180,7 @@ namespace PieShop.InventoryManagement.Domain.ProductManagement
 
             return sb.ToString();
         }
+
+        public abstract object Clone();
     }
 }

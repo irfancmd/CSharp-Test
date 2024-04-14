@@ -1,0 +1,4 @@
+Hello world!
+This is a 
+regular text file. Here is some
+additional text.
